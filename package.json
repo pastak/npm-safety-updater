@@ -1,0 +1,25 @@
+{
+  "name": "npm-safety-updater",
+  "version": "0.0.1",
+  "main": "index.js",
+  "bin": {
+    "safety-update": "cli.js"
+  },
+  "scripts": {
+    "lint:fix": "eslint --fix --quiet './**/*.js'"
+  },
+  "engines": {
+    "node": ">= 8.5.0"
+  },
+  "repository": "https://github.com/pastak/npm-safety-updater.git",
+  "author": "pastak <pasta0915@gmail.com>",
+  "license": "MIT",
+  "private": false,
+  "dependencies": {
+    "meow": "^5.0.0",
+    "semver": "^5.6.0"
+  },
+  "devDependencies": {
+    "eslint": "^5.8.0"
+  }
+}
