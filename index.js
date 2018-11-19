@@ -82,6 +82,7 @@ module.exports = (updateSemVer, flags = {}, options = {}) => {
         console.error('Failed to update:', name);
         fs.copyFileSync(path.join(dirPath, 'package.json-' + (index - 1)), packageJsonPath);
         fs.copyFileSync(path.join(dirPath, LOCKFILE[manager] + '-' + (index - 1)), lockFilePath);
+        if (options.onlyFailed) execCommand(options.onlyFailed);
       }
       execCommand(options.afterTest);
     });
