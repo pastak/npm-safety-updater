@@ -5,5 +5,4 @@ TBW
 ## TOOD
 
 - configure file
-- Read outdated info via STDIN
 - test
