@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 const meow = require('meow');
+const getStdin = require('get-stdin');
 const safeUpdater = require('.');
 
 const cli = meow(`
@@ -49,7 +50,8 @@ for more infomation: https://github.com/pastak/npm-safety-updater
 
 if (cli.input.length > 0) {
   try {
-    safeUpdater(cli.input, cli.flags);
+    getStdin()
+      .then(() => safeUpdater(cli.input, cli.flags));
   } catch (e) {
     console.error(e);
   }

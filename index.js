@@ -16,7 +16,7 @@ const LOCKFILE = {
   yarn: 'yarn.lock'
 };
 
-module.exports = (updateSemVer, flags, options) => {
+module.exports = (updateSemVer, flags = {}, options = {}) => {
   let manager = flags.manager;
   if (!manager) manager = detectManager();
   let outdatedJson = options.outdatedJson;
