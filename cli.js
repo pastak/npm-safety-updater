@@ -15,7 +15,6 @@ Options
   --break, -B, Update include breaking changes
   --force, Skip test command on update
   --manager <'npm'|'yarn'>, Detect your module manager.
-  --no-emoji
 
 Examples
   $ safety-update minor patch --only-dev
