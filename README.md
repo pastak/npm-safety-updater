@@ -31,7 +31,7 @@ for more infomation: https://github.com/pastak/npm-safety-updater
 ```
 
 1. `echo '{}' > safety-update.config.json` on Project root.
-2. `npm i -D npm-safety-update` or `yarn add -D npm-safety-update`
+2. `npm i -D npm-safety-updater` or `yarn add -D npm-safety-updater`
 3. `safety-update patch --only-dev`
 
 # Config
