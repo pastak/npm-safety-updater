@@ -16,6 +16,16 @@ const LOCKFILE = {
   yarn: 'yarn.lock'
 };
 
+const execCommand = (commands) => {
+  let comm = '';
+  if (typeof commands === 'string') {
+    comm = commands;
+  } else if (Array.isArray(commands)) {
+    comm = commands.join('&&');
+  }
+  child_process.execSync(comm);
+}
+
 module.exports = (updateSemVer, flags = {}, options = {}) => {
   let manager = flags.manager;
   if (!manager) manager = detectManager();
@@ -48,7 +58,6 @@ module.exports = (updateSemVer, flags = {}, options = {}) => {
   const dirPath = fs.mkdtempSync(path.join(os.tmpdir(), 'npm-safety-update-'));
   const packageJsonPath = path.resolve('package.json');
   const lockFilePath = path.resolve(`${LOCKFILE[manager]}`);
-  console.log(`use tmpdir: ${dirPath}`);
   fs.copyFileSync(packageJsonPath, path.join(dirPath, 'package.json--1'));
   fs.copyFileSync(lockFilePath, path.join(dirPath, LOCKFILE[manager] + '--1'));
   let success = [];
@@ -63,13 +72,18 @@ module.exports = (updateSemVer, flags = {}, options = {}) => {
       try {
         console.info('RUN:', command);
         if (!process.env.DEBUG) child_process.execSync(command);
-        if (!flags.force) console.info('TEST:', options.testCommand);
+        if (!flags.force && options.testCommand) {
+          console.info('TEST:', options.testCommand);
+          execCommand(options.testCommand);
+        }
         success.push([name, current, goto, url]);
       } catch (e) {
         errors.push([e, name]);
+        console.error('Failed to update:', name);
         fs.copyFileSync(path.join(dirPath, 'package.json-' + (index - 1)), packageJsonPath);
         fs.copyFileSync(path.join(dirPath, LOCKFILE[manager] + '-' + (index - 1)), lockFilePath);
       }
+      execCommand(options.afterTest);
     });
   console.log('updated info:', updateSemVer.join(','));
   console.log(success.map(i => `UPDATE: ${i[0]} to v${i[2]} from v${i[1]} ${i[3]}`).join('\n'));

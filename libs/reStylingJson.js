@@ -18,7 +18,6 @@ module.exports = (manager, inputJson, packageFilePath) => {
       const item = json[name];
       if (!item.current) return;
       const {current, wanted, latest} = item;
-      
       const type = detectDepsType(name, packageFilePath);
       if (type === 'unknown') return;
       

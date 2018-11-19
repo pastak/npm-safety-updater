@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 const meow = require('meow');
+const fs = require('fs');
 const getStdin = require('get-stdin');
 const safeUpdater = require('.');
 
@@ -8,6 +9,7 @@ Usage
   $ safety-update ['major'|'minor'|'patch'|'all']
 
 Options
+  --config, Config file path
   --only-prod, Update Only dependency
   --only-dev, Update Only devDependency
   --break, -B, Update include breaking changes
@@ -21,6 +23,10 @@ Examples
 for more infomation: https://github.com/pastak/npm-safety-updater
 `, {
   flags: {
+    config: {
+      type: 'string',
+      default: 'safety-update.config.json'
+    },
     onlyProd: {
       type: 'boolean',
       default: false
@@ -49,9 +55,21 @@ for more infomation: https://github.com/pastak/npm-safety-updater
 });
 
 if (cli.input.length > 0) {
+  const configPath = require('path').resolve(cli.flags.config);
+  const existConfig = fs.existsSync(configPath);
+
+  let config;
+  if (existConfig) {
+    try {
+      config = JSON.parse(fs.readFileSync(configPath).toString());
+    } catch (e) { }
+  } else {
+    return console.log('Require safety-update.config.json or use --config');
+  }
+
   try {
     getStdin()
-      .then(() => safeUpdater(cli.input, cli.flags));
+      .then(() => safeUpdater(cli.input, cli.flags, config));
   } catch (e) {
     console.error(e);
   }
