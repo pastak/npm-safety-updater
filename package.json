@@ -1,6 +1,6 @@
 {
   "name": "npm-safety-updater",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "main": "index.js",
   "bin": {
     "safety-update": "cli.js"
@@ -11,6 +11,11 @@
   "engines": {
     "node": ">= 8.5.0"
   },
+  "files": [
+    "index.js",
+    "cli.js",
+    "libs"
+  ],
   "repository": "https://github.com/pastak/npm-safety-updater.git",
   "author": "pastak <pasta0915@gmail.com>",
   "license": "MIT",
