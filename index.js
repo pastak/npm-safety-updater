@@ -23,7 +23,7 @@ const execCommand = (commands) => {
   } else if (Array.isArray(commands)) {
     comm = commands.join('&&');
   }
-  child_process.execSync(comm);
+  child_process.execSync(comm, {stdio: [0, 1, 2]});
 }
 
 module.exports = (updateSemVer, flags = {}, options = {}) => {
@@ -71,7 +71,7 @@ module.exports = (updateSemVer, flags = {}, options = {}) => {
       const command = `${manager} ${UPDATE_COMMAND[manager]} ${type === 'devDependencies' ? '-D ' : ''}${name}@${goto}`;
       try {
         console.info('RUN:', command);
-        if (!process.env.DEBUG) child_process.execSync(command);
+        if (!process.env.DEBUG) execCommand(command);
         if (!flags.force && options.testCommand) {
           console.info('TEST:', options.testCommand);
           execCommand(options.testCommand);
