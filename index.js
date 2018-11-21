@@ -12,8 +12,8 @@ const UPDATE_COMMAND = {
   yarn: 'add'
 };
 const RESET_COMMAND = {
-  npm: 'ci',
-  yarn: 'install'
+  npm: 'npm ci',
+  yarn: `rm -rf ${path.resolve('node_modules')} && yarn install`
 }
 const LOCKFILE = {
   npm: 'package-lock.json',
@@ -89,7 +89,7 @@ module.exports = (updateSemVer, flags = {}, options = {}) => {
         if (options.onlyFailed) execCommand(options.onlyFailed);
       }
       execCommand(options.afterTest);
-      execCommand(`${manager} ${RESET_COMMAND[manager]}`)
+      execCommand(RESET_COMMAND[manager]);
     });
   console.log('updated info:', updateSemVer.join(','));
   console.log(success.map(i => `UPDATE: ${i[0]} to v${i[2]} from v${i[1]} ${i[3]}`).join('\n'));
