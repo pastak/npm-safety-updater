@@ -41,7 +41,8 @@ for more infomation: https://github.com/pastak/npm-safety-updater
   "packageFilePath": "path/to/package.json",
   "testCommand": ["echo 'no test'", "exit 1"],
   "afterTest": "echo 'after test'",
-  "onlyFailed": "echo 'test failed'"
+  "onlyFailed": "echo 'test failed'",
+  "onlySuccess": "echo 'test success'"
 }
 ```
 

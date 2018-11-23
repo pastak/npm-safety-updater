@@ -81,6 +81,7 @@ module.exports = (updateSemVer, flags = {}, options = {}) => {
           execCommand(options.testCommand);
         }
         success.push([name, current, goto, url]);
+        if (options.onlySuccess) execCommand(options.onlySuccess);
       } catch (e) {
         errors.push([e, name]);
         console.error('Failed to update:', name);
@@ -88,7 +89,7 @@ module.exports = (updateSemVer, flags = {}, options = {}) => {
         fs.copyFileSync(path.join(dirPath, LOCKFILE[manager] + '-' + (index - 1)), lockFilePath);
         if (options.onlyFailed) execCommand(options.onlyFailed);
       }
-      execCommand(options.afterTest);
+      if (options.afterTest) execCommand(options.afterTest);
       execCommand(RESET_COMMAND[manager]);
     });
   console.log('updated info:', updateSemVer.join(','));
