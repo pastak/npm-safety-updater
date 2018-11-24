@@ -33,6 +33,10 @@ for more infomation: https://github.com/pastak/npm-safety-updater
 1. `echo '{}' > safety-update.config.json` on Project root.
 2. `npx npm-safety-updater patch --only-dev`
 
+## ⚠️ Caution
+
+**Don't use it via project's node_modules** , use via npx or global install because this command remove project's node_modules directory to refresh dependency (also `npm ci` includes removing node_modules).
+
 # Config
 
 ```json
