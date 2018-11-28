@@ -66,6 +66,9 @@ module.exports = (updateSemVer, flags = {}, options = {}) => {
   fs.copyFileSync(lockFilePath, path.join(dirPath, LOCKFILE[manager] + '--1'));
   let success = [];
   let errors = [];
+
+  if (options.prepare) execCommand(options.prepare);
+
   Object.keys(outdatedJson)
     .forEach((name, index) => {
       fs.copyFileSync(packageJsonPath, path.join(dirPath, 'package.json-' + index));

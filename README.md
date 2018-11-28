@@ -42,6 +42,7 @@ for more infomation: https://github.com/pastak/npm-safety-updater
 ```json
 {
   "packageFilePath": "path/to/package.json",
+  "prepare": ["npm run build"],
   "testCommand": ["echo 'no test'", "exit 1"],
   "afterTest": "echo 'after test'",
   "onlyFailed": "echo 'test failed'",
@@ -50,9 +51,11 @@ for more infomation: https://github.com/pastak/npm-safety-updater
 ```
 
 - `packageFilePath: string`: Specify `package.json` path
+- `prepare: string | string[]`: commands execused before updating a module
 - `testCommand: string | string[]`: commands for test after updating a module
 - `afterTest: string | string[]`: commands execused after test commands
 - `onlyFailed: string | string[]`: commands execused when fails test commands
+- `onlySuccess: string | string[]`: commands execused when success test commands
 
 ## TOOD
 
