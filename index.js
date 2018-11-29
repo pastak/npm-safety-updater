@@ -62,8 +62,6 @@ module.exports = (updateSemVer, flags = {}, options = {}) => {
   const dirPath = fs.mkdtempSync(path.join(os.tmpdir(), 'npm-safety-update-'));
   const packageJsonPath = path.resolve('package.json');
   const lockFilePath = path.resolve(`${LOCKFILE[manager]}`);
-  fs.copyFileSync(packageJsonPath, path.join(dirPath, 'package.json--1'));
-  fs.copyFileSync(lockFilePath, path.join(dirPath, LOCKFILE[manager] + '--1'));
   let success = [];
   let errors = [];
 
@@ -71,8 +69,10 @@ module.exports = (updateSemVer, flags = {}, options = {}) => {
 
   Object.keys(outdatedJson)
     .forEach((name, index) => {
-      fs.copyFileSync(packageJsonPath, path.join(dirPath, 'package.json-' + index));
-      fs.copyFileSync(lockFilePath, path.join(dirPath, LOCKFILE[manager] + '-' + index));
+      const copiedPackgeJson = 'package.json-' + index;
+      const copiedPackageLock = LOCKFILE[manager] + '-' + index;
+      fs.copyFileSync(packageJsonPath, path.join(dirPath, copiedPackgeJson));
+      fs.copyFileSync(lockFilePath, path.join(dirPath, copiedPackageLock));
       const item = outdatedJson[name];
       const {current, goto, type, url} = item;
       const command = `${manager} ${UPDATE_COMMAND[manager]} ${type === 'devDependencies' ? '-D ' : ''}${name}@${goto}`;
@@ -88,8 +88,8 @@ module.exports = (updateSemVer, flags = {}, options = {}) => {
       } catch (e) {
         errors.push([e, name]);
         console.error('Failed to update:', name);
-        fs.copyFileSync(path.join(dirPath, 'package.json-' + (index - 1)), packageJsonPath);
-        fs.copyFileSync(path.join(dirPath, LOCKFILE[manager] + '-' + (index - 1)), lockFilePath);
+        fs.copyFileSync(path.join(dirPath, copiedPackgeJson), packageJsonPath);
+        fs.copyFileSync(path.join(dirPath, copiedPackageLock), lockFilePath);
         if (options.onlyFailed) execCommand(options.onlyFailed);
       }
       if (options.afterTest) execCommand(options.afterTest);
