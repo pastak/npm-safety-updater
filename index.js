@@ -14,21 +14,25 @@ const UPDATE_COMMAND = {
 const RESET_COMMAND = {
   npm: 'npm ci',
   yarn: `rm -rf ${path.resolve('node_modules')} && yarn install`
-}
+};
 const LOCKFILE = {
   npm: 'package-lock.json',
   yarn: 'yarn.lock'
 };
 
-const execCommand = (commands) => {
+const execCommand = (commands, replacer) => {
   let comm = '';
   if (typeof commands === 'string') {
     comm = commands;
   } else if (Array.isArray(commands)) {
     comm = commands.join('&&');
   }
+  Object.keys(replacer).forEach(key => {
+    const replace = replacer[key];
+    comm = comm.replace(`%${key}%`, replace);
+  });
   child_process.execSync(comm, {stdio: [0, 1, 2]});
-}
+};
 
 module.exports = (updateSemVer, flags = {}, options = {}) => {
   let manager = flags.manager;
@@ -67,6 +71,7 @@ module.exports = (updateSemVer, flags = {}, options = {}) => {
   let success = [];
   let errors = [];
 
+  execCommand(RESET_COMMAND[manager]);  
   if (options.prepare) execCommand(options.prepare);
 
   Object.keys(outdatedJson)
@@ -75,26 +80,35 @@ module.exports = (updateSemVer, flags = {}, options = {}) => {
       fs.copyFileSync(lockFilePath, path.join(dirPath, LOCKFILE[manager] + '-' + index));
       const item = outdatedJson[name];
       const {current, goto, type, url} = item;
+
+      let replace = {
+        PACKAGE_NAME: name,
+        CURRENT_VERSION: current,
+        GOTO_VERSION: goto,
+        DEPS_TYPE: type
+      };
+
       const command = `${manager} ${UPDATE_COMMAND[manager]} ${type === 'devDependencies' ? '-D ' : ''}${name}@${goto}`;
       try {
         console.info('RUN:', command);
-        if (!process.env.DEBUG) execCommand(command);
+        if (!process.env.DEBUG) execCommand(command, replace);
         if (!flags.force && options.testCommand) {
           console.info('TEST:', options.testCommand);
-          execCommand(options.testCommand);
+          execCommand(options.testCommand, replace);
         }
         success.push([name, current, goto, url]);
-        if (options.onlySuccess) execCommand(options.onlySuccess);
+        if (options.onlySuccess) execCommand(options.onlySuccess, replace);
       } catch (e) {
         errors.push([e, name]);
         console.error('Failed to update:', name);
         fs.copyFileSync(path.join(dirPath, 'package.json-' + (index - 1)), packageJsonPath);
         fs.copyFileSync(path.join(dirPath, LOCKFILE[manager] + '-' + (index - 1)), lockFilePath);
-        if (options.onlyFailed) execCommand(options.onlyFailed);
+        if (options.onlyFailed) execCommand(options.onlyFailed, replace);
       }
-      if (options.afterTest) execCommand(options.afterTest);
-      execCommand(RESET_COMMAND[manager]);
+      if (options.afterTest) execCommand(options.afterTest, replace);
+      execCommand(RESET_COMMAND[manager], replace);
     });
   console.log('updated info:', updateSemVer.join(','));
   console.log(success.map(i => `UPDATE: ${i[0]} to v${i[2]} from v${i[1]} ${i[3]}`).join('\n'));
+  console.log(`====\nfailed to update\n${errors.map(e => e.name).join('\n')}`);
 };

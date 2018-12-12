@@ -57,6 +57,13 @@ for more infomation: https://github.com/pastak/npm-safety-updater
 - `onlyFailed: string | string[]`: commands execused when fails test commands
 - `onlySuccess: string | string[]`: commands execused when success test commands
 
+## Replacable synbols in commands
+
+- `%PACKAGE_NAME%`
+- `%CURRENT_VERSION%`
+- `%GOTO_VERSION%`
+- `%DEPS_TYPE%`
+
 ## TOOD
 
 - test

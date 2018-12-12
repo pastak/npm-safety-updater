@@ -61,7 +61,7 @@ if (cli.input.length > 0) {
   if (existConfig) {
     try {
       config = JSON.parse(fs.readFileSync(configPath).toString());
-    } catch (e) { }
+    } catch (e) { } // eslint-disable-line 
   } else {
     return console.log('Require safety-update.config.json or use --config');
   }
