@@ -20,7 +20,7 @@ const LOCKFILE = {
   yarn: 'yarn.lock'
 };
 
-const execCommand = (commands, replacer) => {
+const execCommand = (commands, replacer = {}) => {
   let comm = '';
   if (typeof commands === 'string') {
     comm = commands;
