@@ -7,9 +7,10 @@ const outdated = require('./libs/outdated');
 const reStylingJson = require('./libs/reStylingJson');
 const filterPackageBySemVer = require('./libs/filterPackageBySemVer');
 
-const UPDATE_COMMAND = {
-  npm: 'install',
-  yarn: 'add'
+const buildUpdateCommand = (manager, type, name, version) => {
+  const flags = type === 'devDependencies' ? '-D ' : '';
+  if (manager === 'npm') return `npm install ${flags}${name}@${version}`;
+  if (manager === 'yarn') return `yarn add ${flags}${name}@^${version}`;
 };
 const RESET_COMMAND = {
   npm: 'npm ci',
@@ -69,7 +70,7 @@ module.exports = (updateSemVer, flags = {}, options = {}) => {
   let success = [];
   let errors = [];
 
-  execCommand(RESET_COMMAND[manager]);  
+  execCommand(RESET_COMMAND[manager]);
   if (options.prepare) execCommand(options.prepare);
 
   Object.keys(outdatedJson)
@@ -88,7 +89,7 @@ module.exports = (updateSemVer, flags = {}, options = {}) => {
         DEPS_TYPE: type
       };
 
-      const command = `${manager} ${UPDATE_COMMAND[manager]} ${type === 'devDependencies' ? '-D ' : ''}${name}@${goto}`;
+      const command = buildUpdateCommand(manager, type, name, goto);
       try {
         console.info('RUN:', command);
         if (!process.env.DEBUG) execCommand(command, replace);
