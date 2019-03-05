@@ -80,7 +80,8 @@ module.exports = (updateSemVer, flags = {}, options = {}) => {
       fs.copyFileSync(packageJsonPath, path.join(dirPath, copiedPackgeJson));
       fs.copyFileSync(lockFilePath, path.join(dirPath, copiedPackageLock));
       const item = outdatedJson[name];
-      const {current, goto, type, url} = item;
+      let {current, goto, type, url} = item;
+      goto = goto || item.wanted;
 
       let replace = {
         PACKAGE_NAME: name,
