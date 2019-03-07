@@ -64,6 +64,6 @@ for more infomation: https://github.com/pastak/npm-safety-updater
 - `%GOTO_VERSION%`
 - `%DEPS_TYPE%`
 
-## TOOD
+## TODO
 
 - test
