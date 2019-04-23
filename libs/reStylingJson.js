@@ -1,7 +1,7 @@
 const detectDepsType = require('./detectDepsType');
 
-module.exports = (manager, inputJson, packageFilePath) => {
-  let json = manager === 'yarn' ? JSON.parse(inputJson).data.body : JSON.parse(inputJson);
+module.exports = (manager, outdatedJson, packageFilePath) => {
+  let json = manager === 'yarn' ? JSON.parse(outdatedJson).data.body : JSON.parse(outdatedJson);
   if (manager === 'yarn' && Array.isArray(json)) {
     let res = {};
     json.forEach(item => {
