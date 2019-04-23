@@ -1,5 +1,5 @@
 module.exports = (name, packageFilePath) => {
-  const pkg = require(packageFilePath || require('path').resolve('package.json'));
+  const pkg = require(require('path').resolve(packageFilePath || 'package.json'));
 
   const {devDependencies, dependencies} = pkg;
 
